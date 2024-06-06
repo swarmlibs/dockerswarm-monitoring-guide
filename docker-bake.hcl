@@ -1,4 +1,6 @@
-variable "PROMETHEUS_VERSION" { default = "latest" }
+variable "ALPINE_VERSION" { default = "latest" }
+variable "PROMETHEUS_VERSION" { default = "main" }
+
 target "docker-metadata-action" {}
 target "github-metadata-action" {}
 
@@ -23,6 +25,7 @@ target "prometheus" {
         "github-metadata-action",
     ]
     args = {
+        ALPINE_VERSION = "${ALPINE_VERSION}"
         PROMETHEUS_VERSION = "${PROMETHEUS_VERSION}"
     }
 }

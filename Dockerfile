@@ -1,7 +1,8 @@
+ARG ALPINE_VERSION=latest
 ARG PROMETHEUS_VERSION=v2.44.0
 FROM prom/prometheus:$PROMETHEUS_VERSION AS prometheusbin
 
-FROM alpine:latest AS base
+FROM alpine:$ALPINE_VERSION AS base
 RUN apk add --no-cache bash ca-certificates
 ADD rootfs /
 
