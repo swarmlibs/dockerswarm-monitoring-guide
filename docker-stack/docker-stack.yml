@@ -1,0 +1,92 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/swarmlibs/dockerstack-schema/main/schema/dockerstack-spec.json
+
+services:
+  prometheus:
+    image: swarmlibs/prometheus:local
+    ports:
+      - published: 9090
+        target: 9090
+        mode: host
+    volumes:
+      - prometheus-data:/prometheus/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - docker_metrics
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    command: -logtostderr -docker_only
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        io.prometheus.enabled: "true"
+        io.prometheus.scrape_port: "8080"
+    volumes:
+      - type: bind
+        source: /
+        target: /rootfs
+        read_only: true
+      - type: bind
+        source: /var/run
+        target: /var/run
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /sys
+        read_only: true
+      - type: bind
+        source: /var/lib/docker
+        target: /var/lib/docker
+        read_only: true
+      # - type: bind
+      #   source: /dev/disk
+      #   target: /dev/disk
+      #   read_only: true
+    networks:
+      - docker_metrics
+
+  node-exporter:
+    image: prom/node-exporter:v1.5.0
+    command:
+      - '--path.sysfs=/host/sys'
+      - '--path.procfs=/host/proc'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--no-collector.ipvs'
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        io.prometheus.enabled: "true"
+        io.prometheus.scrape_port: "9100"
+    volumes:
+      - type: bind
+        source: /
+        target: /rootfs
+        read_only: true
+      - type: bind
+        source: /proc
+        target: /host/proc
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /host/sys
+        read_only: true
+    networks:
+      - docker_metrics
+
+volumes:
+  prometheus-data:
+
+networks:
+  docker_metrics:
+    name: docker_metrics
+    attachable: true
