@@ -5,39 +5,28 @@
 set -e
 
 # Prometheus configuration file.
-PROMETHEUS_CONFIG_DIR="/prometheus/config"
-PROMETHEUS_CONFIG_FILE=${PROMETHEUS_CONFIG_FILE:-"/etc/prometheus/prometheus.yml"}
+export PROMETHEUS_CONFIG_DIR="/prometheus/config"
+export PROMETHEUS_CONFIG_FILE="/etc/prometheus/prometheus.yml"
 
 # Directory containing the scrape configuration files.
-PROMETHEUS_SCRAPE_CONFIG_DIR="/prometheus/scrape_configs"
+export PROMETHEUS_SCRAPE_CONFIG_DIR="/etc/prometheus/scrape_configs"
 
 # Prometheus data directory.
-PROMETHEUS_TSDB_PATH="/prometheus/data"
+export PROMETHEUS_TSDB_PATH="/prometheus/data"
 
 # Create the directory for the configuration parts.
 mkdir -p $(dirname ${PROMETHEUS_CONFIG_FILE})
 mkdir -p ${PROMETHEUS_CONFIG_DIR}
 
-# Generate the global configuration file.
-PROMETHEUS_SCRAPE_INTERVAL=${PROMETHEUS_SCRAPE_INTERVAL:-"1m"}
-PROMETHEUS_SCRAPE_TIMEOUT=${PROMETHEUS_SCRAPE_TIMEOUT:-"10s"}
-PROMETHEUS_EVALUATION_INTERVAL=${PROMETHEUS_EVALUATION_INTERVAL:-"1m"}
-
-echo "==> Generating the global configuration file..."
-cat <<EOF >${PROMETHEUS_CONFIG_DIR}/00-global.yml
-global:
-  scrape_interval: ${PROMETHEUS_SCRAPE_INTERVAL} # Set the scrape interval to every ${PROMETHEUS_SCRAPE_INTERVAL}. Default is every 1 minute.
-  scrape_timeout: ${PROMETHEUS_SCRAPE_TIMEOUT} # scrape_timeout is set to the ${PROMETHEUS_SCRAPE_TIMEOUT}. The default is 10s.
-  evaluation_interval: ${PROMETHEUS_EVALUATION_INTERVAL} # Evaluate rules every ${PROMETHEUS_EVALUATION_INTERVAL}. The default is every 1 minute.
-
-scrape_config_files:
-  - "${PROMETHEUS_SCRAPE_CONFIG_DIR}/*"
-EOF
+export GLOBAL_CONFIG_FILE=${GLOBAL_CONFIG_FILE:-"${PROMETHEUS_CONFIG_DIR}/00-global.yml"}
+if [ ! -f "$GLOBAL_CONFIG_FILE" ]; then
+  /utils/gen-global-config "${GLOBAL_CONFIG_FILE}"
+fi
 
 # Generate the alertmanager configuration file.
-ALERTING_CONFIG_FILE=${ALERTING_CONFIG_FILE:-"${PROMETHEUS_CONFIG_DIR}/10-alerting.yml"}
+export ALERTING_CONFIG_FILE=${ALERTING_CONFIG_FILE:-"${PROMETHEUS_CONFIG_DIR}/10-alerting.yml"}
 if [ ! -f "${ALERTING_CONFIG_FILE}" ]; then
-    /utils/generate-alerting-config "${ALERTING_CONFIG_FILE}"
+    /utils/gen-alerting-config "${ALERTING_CONFIG_FILE}"
 fi
 
 # Generate the configuration file by concatenating all the parts.
@@ -61,7 +50,8 @@ if [ "$1" = "" ]; then
         --config.file="${PROMETHEUS_CONFIG_FILE}" \
         --storage.tsdb.path="${PROMETHEUS_TSDB_PATH}" \
         --web.console.libraries=/usr/share/prometheus/console_libraries \
-        --web.console.templates=/usr/share/prometheus/consoles
+        --web.console.templates=/usr/share/prometheus/consoles \
+        --log.level=info
 fi
 
 set -x

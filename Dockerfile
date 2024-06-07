@@ -5,6 +5,7 @@ FROM prom/prometheus:$PROMETHEUS_VERSION AS prometheusbin
 FROM alpine:$ALPINE_VERSION AS base
 RUN apk add --no-cache bash ca-certificates
 ADD rootfs /
+RUN chmod +x /docker-entrypoint.sh /utils/*
 
 FROM base
 COPY --from=prometheusbin /bin/prometheus /bin/prometheus
