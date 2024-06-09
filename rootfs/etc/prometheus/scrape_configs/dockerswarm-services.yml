@@ -3,7 +3,7 @@ scrape_configs:
   - job_name: 'dockerswarm-blackbox-exporter'
 
     static_configs:
-      - targets: ['blackbox-exporter.svc.dockerswarm.internal:9115']
+      - targets: ['blackbox-exporter.svc.cluster.local:9115']
 
   - job_name: 'dockerswarm-services'
 
@@ -25,11 +25,14 @@ scrape_configs:
       #   - __meta_dockerswarm_service_label_io_prometheus_probe_enabled
       #   regex: 'true'
       #   action: keep
-
-      # Drop services with the following labels
-      # - io.prometheus.internal=<true|false>
+      # - io.prometheus.server=<true|false>
       - source_labels:
-        - __meta_dockerswarm_service_label_io_prometheus_internal
+        - __meta_dockerswarm_service_label_io_prometheus_server
+        regex: 'true'
+        action: drop
+      # - io.prometheus.exporter=<true|false>
+      - source_labels:
+        - __meta_dockerswarm_service_label_io_prometheus_exporter
         regex: 'true'
         action: drop
 
@@ -45,7 +48,7 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - target_label: __address__
-        replacement: blackbox-exporter.svc.dockerswarm.internal:9115
+        replacement: blackbox-exporter.svc.cluster.local:9115
       - source_labels: [__param_target]
         target_label: instance
       

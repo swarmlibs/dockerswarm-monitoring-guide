@@ -39,7 +39,7 @@ scrape_configs:
         - __meta_dockerswarm_node_id
         target_label: __address__
         regex: (.+)
-        replacement: $1.node-exporter.svc.dockerswarm.internal:9100
+        replacement: $1-node-exporter.svc.cluster.local:9100
 
       # Set hostname as instance label
       - source_labels:

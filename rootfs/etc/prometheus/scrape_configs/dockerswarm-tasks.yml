@@ -14,10 +14,15 @@ scrape_configs:
       # ================================================================================
       # Keep or drop targets with the following rules
       # ================================================================================
-      # Drop services with the following labels
-      # - io.prometheus.internal=<true|false>
+
+      # - io.prometheus.server=<true|false>
       - source_labels:
-        - __meta_dockerswarm_service_label_io_prometheus_internal
+        - __meta_dockerswarm_service_label_io_prometheus_server
+        regex: 'true'
+        action: drop
+      # - io.prometheus.exporter=<true|false>
+      - source_labels:
+        - __meta_dockerswarm_service_label_io_prometheus_exporter
         regex: 'true'
         action: drop
 

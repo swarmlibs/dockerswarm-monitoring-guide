@@ -1,0 +1,148 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/swarmlibs/dockerstack-schema/main/schema/dockerstack-spec.json
+
+x-prometheus-port: &x-prometheus-port 9090
+x-blackbox-exporter-port: &x-blackbox-exporter-port 9115
+x-node-exporter-port: &x-node-exporter-port 9100
+x-cadvisor-port: &x-cadvisor-port 8080
+
+x-exporter-resources-constraints: &x-exporter-resources-constraints
+  limits:
+    memory: 128M
+  reservations:
+    memory: 64M
+
+volumes:
+  prometheus-data:
+
+networks:
+  dockerswarm_monitor:
+    name: dockerswarm_monitor
+    attachable: true
+
+services:
+  prometheus:
+    image: swarmlibs/prometheus:local
+    deploy:
+      labels:
+        io.prometheus.enabled: "true"
+        io.prometheus.job_name: "prometheus"
+        io.prometheus.scrape_port: "9090"
+        io.prometheus.metrics_path: "/metrics"
+        io.prometheus.server: "true"
+    ports:
+      - published: 9090
+        target: 9090
+        mode: host
+    volumes:
+      # - prometheus-data:/prometheus/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    hostname: prometheus.svc.cluster.local
+    networks:
+      - dockerswarm_monitor
+    depends_on:
+      - blackbox-exporter
+      - node-exporter
+      - cadvisor
+
+  # ====================================================
+  # Essential services
+  # ====================================================
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    deploy:
+      replicas: 1
+      resources: *x-exporter-resources-constraints
+      labels:
+        io.prometheus.exporter: "true"
+    ports:
+      - published: 9115
+        target: 9115
+        mode: host
+    hostname: blackbox-exporter.svc.cluster.local
+    networks:
+      - dockerswarm_monitor
+
+  # ====================================================
+  # Globally deployed services
+  # ====================================================
+
+  node-exporter:
+    image: prom/node-exporter:v1.5.0
+    command:
+      - '--path.sysfs=/host/sys'
+      - '--path.procfs=/host/proc'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--no-collector.ipvs'
+    ports:
+      - published: 9100
+        target: 9100
+        mode: host
+    deploy:
+      mode: global
+      resources: *x-exporter-resources-constraints
+      labels:
+        io.prometheus.exporter: "true"
+    volumes:
+      - type: bind
+        source: /
+        target: /rootfs
+        read_only: true
+      - type: bind
+        source: /proc
+        target: /host/proc
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /host/sys
+        read_only: true
+    hostname: "{{.Node.ID}}-node-exporter.svc.cluster.local"
+    networks:
+      - dockerswarm_monitor
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    command: -logtostderr -docker_only
+    deploy:
+      mode: global
+      resources: *x-exporter-resources-constraints
+      labels:
+        io.prometheus.exporter: "true"
+    ports:
+      - published: 8080
+        target: 8080
+        mode: host
+    volumes:
+      - type: bind
+        source: /
+        target: /rootfs
+        read_only: true
+      - type: bind
+        source: /var/run
+        target: /var/run
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /sys
+        read_only: true
+      - type: bind
+        source: /var/lib/docker
+        target: /var/lib/docker
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      # - type: bind
+      #   source: /dev/disk
+      #   target: /dev/disk
+      #   read_only: true
+      # - type: bind
+      #   source: /dev/kmsg
+      #   target: /dev/kmsg
+      #   read_only: true
+    hostname: "{{.Node.ID}}-cadvisor.svc.cluster.local"
+    networks:
+      - dockerswarm_monitor

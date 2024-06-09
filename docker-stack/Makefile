@@ -1,19 +1,13 @@
+STACK_NAME := dockerswarm_monitor
+
 make: deploy
 
 deploy:
-	$(MAKE) -C prometheus deploy
-	$(MAKE) -C cadvisor deploy
-	$(MAKE) -C node-exporter deploy
-	$(MAKE) -C blackbox-exporter deploy
+	docker stack deploy -c docker-stack.yml --detach=false  $(STACK_NAME)
 
 remove:
-	$(MAKE) -C blackbox-exporter remove
-	$(MAKE) -C node-exporter remove
-	$(MAKE) -C cadvisor remove
-	$(MAKE) -C prometheus remove
+	docker stack rm $(STACK_NAME)
 
 clean:
-	$(MAKE) -C blackbox-exporter clean
-	$(MAKE) -C node-exporter clean
-	$(MAKE) -C cadvisor clean
-	$(MAKE) -C prometheus clean
+	@echo "Cleaning volumes..."
+	@docker volume ls -q  | grep prometheus- | xargs docker volume rm
