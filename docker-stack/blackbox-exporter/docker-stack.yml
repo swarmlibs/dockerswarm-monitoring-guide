@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/swarmlibs/dockerstack-schema/main/schema/dockerstack-spec.json
+
+services:
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    hostname: blackbox-exporter.dockerswarm_monitor.internal
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        io.prometheus.enabled: "true"
+        io.prometheus.job_name: "blackbox-exporter"
+        io.prometheus.scrape_port: "9115"
+        io.prometheus.metrics_path: "/metrics"
+        io.prometheus.internal: "true"
+    networks:
+      - dockerswarm_monitor
+
+networks:
+  dockerswarm_monitor:
+    name: dockerswarm_monitor
+    external: true

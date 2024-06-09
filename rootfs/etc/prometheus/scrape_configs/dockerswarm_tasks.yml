@@ -17,10 +17,10 @@ scrape_configs:
       # Keep or drop targets with the following rules
       # ================================================================================
       # Drop services with the following labels
-      # - io.prometheus.job_name=cadvisor|node-exporter
+      # - io.prometheus.internal=<true|false>
       - source_labels:
-        - __meta_dockerswarm_service_label_io_prometheus_job_name
-        regex: (prometheus|cadvisor|node-exporter)
+        - __meta_dockerswarm_service_label_io_prometheus_internal
+        regex: 'true'
         action: drop
 
       # Keep only tasks with desired state "running"

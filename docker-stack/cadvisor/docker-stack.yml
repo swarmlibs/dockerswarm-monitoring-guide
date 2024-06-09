@@ -16,6 +16,7 @@ services:
         io.prometheus.job_name: "cadvisor"
         io.prometheus.scrape_port: "8080"
         io.prometheus.metrics_path: "/metrics"
+        io.prometheus.internal: "true"
     ports:
       - published: 8080
         target: 8080
