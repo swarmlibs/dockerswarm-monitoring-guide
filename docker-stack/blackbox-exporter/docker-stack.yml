@@ -3,7 +3,6 @@
 services:
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
-    hostname: blackbox-exporter.dockerswarm_monitor.internal
     deploy:
       replicas: 1
       resources:
@@ -17,6 +16,11 @@ services:
         io.prometheus.scrape_port: "9115"
         io.prometheus.metrics_path: "/metrics"
         io.prometheus.internal: "true"
+    ports:
+      - published: 9115
+        target: 9115
+        mode: host
+    hostname: blackbox-exporter.svc.dockerswarm.internal
     networks:
       - dockerswarm_monitor
 

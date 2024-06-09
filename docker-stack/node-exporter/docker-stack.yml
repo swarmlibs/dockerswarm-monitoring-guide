@@ -11,6 +11,7 @@ services:
     ports:
       - published: 9100
         target: 9100
+        mode: host
     deploy:
       mode: global
       resources:
@@ -37,6 +38,7 @@ services:
         source: /sys
         target: /host/sys
         read_only: true
+    hostname: "{{.Node.ID}}.node-exporter.svc.dockerswarm.internal"
     networks:
       - dockerswarm_monitor
 

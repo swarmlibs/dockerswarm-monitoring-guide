@@ -3,6 +3,13 @@
 services:
   prometheus:
     image: swarmlibs/prometheus:local
+    deploy:
+      labels:
+        io.prometheus.enabled: "true"
+        io.prometheus.job_name: "prometheus"
+        io.prometheus.scrape_port: "9090"
+        io.prometheus.metrics_path: "/metrics"
+        io.prometheus.internal: "true"
     ports:
       - published: 9090
         target: 9090
@@ -10,6 +17,7 @@ services:
     volumes:
       # - prometheus-data:/prometheus/data
       - /var/run/docker.sock:/var/run/docker.sock
+    hostname: "{{.Node.ID}}.prometheus.svc.dockerswarm.internal"
     networks:
       - dockerswarm_monitor
 

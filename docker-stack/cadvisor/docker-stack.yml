@@ -20,6 +20,8 @@ services:
     ports:
       - published: 8080
         target: 8080
+        mode: host
+    hostname: cadvisor.svc.dockerswarm.internal
     volumes:
       - type: bind
         source: /
