@@ -1,13 +1,16 @@
-STACK_NAME := prometheus
-
-make:
+make: deploy
 
 deploy:
-	docker stack deploy -c docker-stack.yml $(STACK_NAME)
+	@$(MAKE) -C prometheus deploy
+	@$(MAKE) -C cadvisor deploy
+	@$(MAKE) -C node-exporter deploy
 
 remove:
-	docker stack rm $(STACK_NAME)
+	@$(MAKE) -C cadvisor remove
+	@$(MAKE) -C node-exporter remove
+	@$(MAKE) -C prometheus remove
 
 clean:
-	@echo "Cleaning volumes..."
-	@docker volume ls -q  | grep prometheus- | xargs docker volume rm
+	@$(MAKE) -C cadvisor clean
+	@$(MAKE) -C node-exporter clean
+	@$(MAKE) -C prometheus clean

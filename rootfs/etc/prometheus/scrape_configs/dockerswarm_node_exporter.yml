@@ -1,7 +1,7 @@
 # This is the same configuration file, but with the addition of Kubernetes compatible relabeling rules.
 # Any services other than cadvisor and node-exporter will be dropped.
 scrape_configs:
-  - job_name: 'dockerswarm_cadvisor'
+  - job_name: 'dockerswarm_node_exporter'
 
     # Use the Docker Swarm service discovery to find tasks.
     dockerswarm_sd_configs:
@@ -10,8 +10,8 @@ scrape_configs:
         role: tasks
         filters:
           - name: label
-            values: 
-              - io.prometheus.job_name=cadvisor
+            values:
+              - io.prometheus.job_name=node-exporter
           - name: desired-state
             values: [ running ]
 
@@ -132,36 +132,3 @@ scrape_configs:
         - __meta_dockerswarm_service_name
         target_label: pod
         separator: '.'
-
-    metric_relabel_configs:
-      # Set "container" to the Docker Swarm's Task Name of the target container
-      - source_labels:
-        - name
-        target_label: container
-
-      # ================================================================================
-      # Label mapping
-      # ================================================================================
-      - action: labelmap
-        regex: container_label_com_(docker_.*)
-
-      # ================================================================================
-      # Kubernetes compatible relabeling
-      # - namespace
-      # - deployment
-      # - pod
-      # ================================================================================
-      # # Set Kubernetes's Namespace with "com.docker.stack.namespace" label
-      - source_labels:
-        - container_label_com_docker_stack_namespace
-        target_label: namespace
-
-      # Set Kubernetes's Deployment with "com.docker.stack.namespace" label
-      - source_labels:
-        - container_label_com_docker_stack_namespace
-        target_label: deployment
-
-      # Set Kubernetes's Pod Name with Docker Swarm's Service Name
-      - source_labels:
-        - container_label_com_docker_swarm_service_name
-        target_label: pod

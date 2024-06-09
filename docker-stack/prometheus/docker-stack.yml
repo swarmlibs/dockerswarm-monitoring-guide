@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/swarmlibs/dockerstack-schema/main/schema/dockerstack-spec.json
+
+services:
+  prometheus:
+    image: swarmlibs/prometheus:local
+    ports:
+      - published: 9090
+        target: 9090
+        mode: host
+    volumes:
+      # - prometheus-data:/prometheus/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - dockerswarm_monitor
+
+volumes:
+  prometheus-data:
+
+networks:
+  dockerswarm_monitor:
+    name: dockerswarm_monitor
+    attachable: true
