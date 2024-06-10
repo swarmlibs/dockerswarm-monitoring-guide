@@ -28,8 +28,6 @@ fi
 if [ "$1" = "" ]; then
     set -- node_exporter \
       --path.rootfs="/rootfs" \
-      --path.sysfs="/host/sys" \
-      --path.procfs="/host/proc" \
       --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)" \
       --collector.textfile.directory="/etc/node-exporter/" \
       --no-collector.ipvs

@@ -126,14 +126,6 @@ services:
         source: /
         target: /rootfs
         read_only: true
-      - type: bind
-        source: /proc
-        target: /host/proc
-        read_only: true
-      - type: bind
-        source: /sys
-        target: /host/sys
-        read_only: true
 
   # ====================================================
   # cAdvisor
