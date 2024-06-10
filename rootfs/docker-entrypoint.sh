@@ -31,7 +31,7 @@ global:
 
 # Load scrape configs from this directory.
 scrape_config_files:
-  - "/dockerswarm.conf.d/*"
+  - "/dockerswarm/scrape_configs/*"
 EOF
 
 # If the user is trying to run Prometheus directly with some arguments, then
