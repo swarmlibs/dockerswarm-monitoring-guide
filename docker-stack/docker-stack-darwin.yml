@@ -50,8 +50,10 @@ services:
       replicas: 1
       resources: *x-exporter-resources-constraints
       labels:
-        io.prometheus.role: "blackbox-exporter"
-        io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
+        io.prometheus.enabled: "true"
+        io.prometheus.job_name: "blackbox-exporter"
+        io.prometheus.scrape_port: "9115"
+        io.prometheus.metrics_path: "/metrics"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
     ports:
       - published: 9115
