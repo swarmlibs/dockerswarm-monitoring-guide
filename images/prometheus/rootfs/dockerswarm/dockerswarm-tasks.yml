@@ -16,7 +16,7 @@ scrape_configs:
 
     dockerswarm_sd_configs:
       - host: unix:///var/run/docker.sock
-        refresh_interval: 5s
+        refresh_interval: 15s
         role: tasks
         filters:
           - name: desired-state
