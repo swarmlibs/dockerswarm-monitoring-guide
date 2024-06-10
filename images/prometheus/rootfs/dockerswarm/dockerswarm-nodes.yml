@@ -55,4 +55,6 @@ scrape_configs:
       # Label mapping
       # ================================================================================
       - action: labelmap
-        regex: __meta_dockerswarm_(node_.+)
+        regex: __meta_(dockerswarm_node_.+)
+      - action: labelmap
+        regex: __meta_dockerswarm_(node_(?:id|hostname))
