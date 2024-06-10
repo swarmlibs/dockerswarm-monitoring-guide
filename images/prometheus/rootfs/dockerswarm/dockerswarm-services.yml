@@ -43,10 +43,10 @@ scrape_configs:
         regex: 'false'
         action: drop
 
-      # Keep only tasks connected to the Docker Swarm's Ingress network
+      # Keep only tasks connected to the "dockerswarm_ingress" network
       - source_labels:
         - __meta_dockerswarm_network_name
-        regex: (^dockerswarm_monitor$)
+        regex: (^dockerswarm_ingress$)
         action: keep
 
       # ================================================================================

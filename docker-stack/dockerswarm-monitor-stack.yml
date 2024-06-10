@@ -17,8 +17,14 @@ volumes:
   prometheus-data:
 
 networks:
-  dockerswarm_monitor:
-    name: dockerswarm_monitor
+  dockerswarm_ingress:
+    name: dockerswarm_ingress
+    external: true
+  dockerswarm_metrics:
+    name: dockerswarm_metrics
+    attachable: true
+  prometheus_exporter:
+    name: prometheus_exporter
     attachable: true
 
 services:
@@ -46,7 +52,8 @@ services:
       - published: 3000
         target: 3000
     networks:
-      - dockerswarm_monitor
+      dockerswarm_ingress:
+      dockerswarm_metrics:
     volumes:
       - grafana-data:/var/lib/grafana
 
@@ -83,7 +90,9 @@ services:
         mode: host
     hostname: prometheus.svc.cluster.local
     networks:
-      - dockerswarm_monitor
+      dockerswarm_ingress:
+      dockerswarm_metrics:
+      prometheus_exporter:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -111,7 +120,7 @@ services:
         target: 9115
     hostname: blackbox-exporter.svc.cluster.local
     networks:
-      - dockerswarm_monitor
+      prometheus_exporter:
 
   # ====================================================
   # Node exporter
@@ -133,7 +142,7 @@ services:
         target: 9100
         mode: host
     networks:
-      - dockerswarm_monitor
+      prometheus_exporter:
     hostname: node-exporter.{{.Node.ID}}.cluster.local
     volumes:
       - type: bind
@@ -162,7 +171,7 @@ services:
         target: 8080
         mode: host
     networks:
-      - dockerswarm_monitor
+      prometheus_exporter:
     hostname: cadvisor.{{.Node.ID}}.cluster.local
     volumes:
       - type: bind
@@ -195,3 +204,8 @@ services:
     #     source: /dev/kmsg
     #     target: /dev/kmsg
     #     read_only: true
+
+  echo:
+    image: ealen/echo-server
+    networks:
+      dockerswarm_metrics:

@@ -39,10 +39,10 @@ scrape_configs:
         regex: running
         action: keep
 
-      # Keep only tasks connected to the "dockerswarm_monitor" network
+      # Keep only tasks connected to the "dockerswarm_metrics" network
       - source_labels:
         - __meta_dockerswarm_network_name
-        regex: (^dockerswarm_monitor$)
+        regex: (^dockerswarm_metrics$)
         action: keep
 
       # ================================================================================
