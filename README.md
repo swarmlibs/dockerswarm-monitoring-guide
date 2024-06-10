@@ -25,7 +25,7 @@ root@manager01:~# docker service ls
 ID             NAME                                    MODE         REPLICAS               IMAGE                              PORTS
 d7ac4srqrnbt   dockerswarm_monitor_blackbox-exporter   replicated   1/1                    prom/blackbox-exporter:latest      
 4xe4o39oe3p0   dockerswarm_monitor_cadvisor            global       1/1                    gcr.io/cadvisor/cadvisor:v0.47.0   
-2au72ggr246p   dockerswarm_monitor_grafana             replicated   1/1                    grafana/grafana:latest             *:3000->3000/tcp
+2au72ggr246p   dockerswarm_monitor_grafana             replicated   1/1                    swarmlibs/grafana:latest           *:3000->3000/tcp
 x0bpp3s1o5sa   dockerswarm_monitor_node-exporter       global       1/1                    swarmlibs/node-exporter:latest
 kvvx0wv8to7a   dockerswarm_monitor_prometheus          global       1/1                    swarmlibs/prometheus:latest
 ```
