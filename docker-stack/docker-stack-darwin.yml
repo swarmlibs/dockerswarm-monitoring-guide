@@ -41,31 +41,25 @@ services:
       - dockerswarm_monitor
 
   # ====================================================
-  # Essential services
+  # Globally deployed services
   # ====================================================
 
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
     deploy:
-      replicas: 1
+      mode: global
       resources: *x-exporter-resources-constraints
       labels:
-        io.prometheus.enabled: "true"
-        io.prometheus.job_name: "blackbox-exporter"
-        io.prometheus.scrape_port: "9115"
-        io.prometheus.metrics_path: "/metrics"
+        io.prometheus.role: "blackbox-exporter"
+        io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
     ports:
       - published: 9115
         target: 9115
         mode: host
-    hostname: blackbox-exporter.svc.cluster.local
+    hostname: "{{.Node.ID}}-blackbox-exporter.svc.cluster.local"
     networks:
       - dockerswarm_monitor
-
-  # ====================================================
-  # Globally deployed services
-  # ====================================================
 
   node-exporter:
     image: prom/node-exporter:v1.5.0
