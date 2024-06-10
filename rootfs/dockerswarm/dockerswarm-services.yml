@@ -10,34 +10,6 @@
 # io.prometheus.dockerswarm-services.should_be_probed=<true|false>
 scrape_configs:
 
-  - job_name: 'dockerswarm-blackbox-exporter'
-
-    dockerswarm_sd_configs:
-      - host: unix:///var/run/docker.sock
-        role: nodes
-
-    relabel_configs:
-      # ================================================================================
-      # Override prometheus internal labels
-      # ================================================================================
-      - source_labels:
-        - __meta_dockerswarm_node_id
-        target_label: __address__
-        regex: (.+)
-        replacement: $1-blackbox-exporter.svc.cluster.local:9115
-
-      # Set hostname as instance label
-      - source_labels:
-        - __meta_dockerswarm_node_address
-        target_label: instance
-
-      # ================================================================================
-      # Label mapping
-      # ================================================================================
-      - action: labelmap
-        regex: __meta_(dockerswarm_node_.+)
-
-
   - job_name: 'dockerswarm-services'
 
     metrics_path: /probe
@@ -82,7 +54,7 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - target_label: __address__
-        replacement: blackbox-exporter:9115
+        replacement: blackbox-exporter.svc.cluster.local:9115
       - source_labels: [__param_target]
         target_label: instance
 
