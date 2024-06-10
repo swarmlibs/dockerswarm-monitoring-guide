@@ -72,6 +72,13 @@ scrape_configs:
       # io.prometheus.metrics_path=<path>
       - source_labels:
         - __meta_dockerswarm_service_label_io_prometheus_metrics_path
+        - __metrics_path__
+        target_label: __meta_dockerswarm_service_label_io_prometheus_metrics_path
+        separator: ';'
+        regex: ;(.*)
+        replacement: $1
+      - source_labels:
+        - __meta_dockerswarm_service_label_io_prometheus_metrics_path
         target_label: __metrics_path__
 
       # io.prometheus.param_<name>=<value>
