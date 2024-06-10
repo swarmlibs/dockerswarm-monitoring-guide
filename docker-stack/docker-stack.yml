@@ -23,7 +23,7 @@ networks:
 services:
 
   # ====================================================
-  # Blackbox prober exporter
+  # Prometheus
   # https://github.com/prometheus/prometheus
   # ====================================================
 
@@ -76,7 +76,6 @@ services:
         io.prometheus.enabled: "true"
         io.prometheus.job_name: "blackbox-exporter"
         io.prometheus.scrape_port: "9115"
-        io.prometheus.metrics_path: "/metrics"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
     logging: *x-default-logging
     ports:
