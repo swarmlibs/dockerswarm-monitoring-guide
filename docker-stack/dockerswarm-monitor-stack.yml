@@ -17,10 +17,6 @@ volumes:
   prometheus-data:
 
 networks:
-  dockerswarm_ingress:
-    name: dockerswarm_ingress
-    external: true
-
   dockerswarm_metrics:
     name: dockerswarm_metrics
     attachable: true
@@ -54,7 +50,6 @@ services:
       - published: 3000
         target: 3000
     networks:
-      dockerswarm_ingress:
       dockerswarm_metrics:
     volumes:
       - grafana-data:/var/lib/grafana
@@ -92,7 +87,6 @@ services:
         mode: host
     hostname: prometheus.svc.cluster.local
     networks:
-      dockerswarm_ingress:
       dockerswarm_metrics:
       prometheus_exporter:
     extra_hosts:

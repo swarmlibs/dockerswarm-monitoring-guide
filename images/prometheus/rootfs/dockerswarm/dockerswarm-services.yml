@@ -10,7 +10,7 @@
 # io.prometheus.dockerswarm-services.should_be_probed=<true|false>
 scrape_configs:
 
-  - job_name: 'dockerswarm-ingress'
+  - job_name: 'dockerswarm-services'
 
     metrics_path: /probe
     params:
@@ -43,10 +43,10 @@ scrape_configs:
         regex: 'false'
         action: drop
 
-      # Keep only tasks connected to the "dockerswarm_ingress" network
+      # Keep only tasks connected to the "dockerswarm_metrics" network
       - source_labels:
         - __meta_dockerswarm_network_name
-        regex: (^dockerswarm_ingress$)
+        regex: (^dockerswarm_metrics$)
         action: keep
 
       # ================================================================================
