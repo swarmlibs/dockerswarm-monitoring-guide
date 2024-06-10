@@ -14,7 +14,7 @@ scrape_configs:
         - __meta_dockerswarm_node_id
         target_label: __address__
         regex: (.+)
-        replacement: $1-cadvisor.svc.cluster.local:8080
+        replacement: cadvisor.$1.cluster.local:8080
 
       # Set hostname as instance label
       - source_labels:

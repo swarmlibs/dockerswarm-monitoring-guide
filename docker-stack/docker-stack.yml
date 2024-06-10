@@ -98,7 +98,7 @@ services:
         source: /sys
         target: /host/sys
         read_only: true
-    hostname: "{{.Node.ID}}-node-exporter.svc.cluster.local"
+    hostname: "node-exporter.{{.Node.ID}}.cluster.local"
     networks:
       - dockerswarm_monitor
 
@@ -145,6 +145,6 @@ services:
         source: /dev/kmsg
         target: /dev/kmsg
         read_only: true
-    hostname: "{{.Node.ID}}-cadvisor.svc.cluster.local"
+    hostname: "cadvisor.{{.Node.ID}}.cluster.local"
     networks:
       - dockerswarm_monitor
