@@ -10,7 +10,7 @@
 # io.prometheus.dockerswarm-services.should_be_probed=<true|false>
 scrape_configs:
 
-  - job_name: 'dockerswarm-services'
+  - job_name: 'dockerswarm-ingress'
 
     metrics_path: /probe
     params:
