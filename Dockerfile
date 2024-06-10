@@ -5,7 +5,8 @@ FROM prom/prometheus:$PROMETHEUS_VERSION AS prometheusbin
 FROM alpine:$ALPINE_VERSION AS base
 RUN apk add --no-cache bash ca-certificates
 ADD rootfs /
-RUN chmod +x /docker-entrypoint.sh /utils/*
+ADD https://github.com/swarmlibs/prometheus-scrape-configs.git#main /dockerswarm.conf.d
+RUN chmod +x /docker-entrypoint.sh
 
 FROM base
 COPY --from=prometheusbin /bin/prometheus /bin/prometheus
