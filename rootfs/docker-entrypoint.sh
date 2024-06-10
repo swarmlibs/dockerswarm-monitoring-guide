@@ -4,6 +4,24 @@
 
 set -e
 
+# Docker Swarm service template variables
+#  - DOCKERSWARM_SERVICE_ID={{.Service.ID}}
+#  - DOCKERSWARM_SERVICE_NAME={{.Service.Name}}
+#  - DOCKERSWARM_NODE_ID={{.Node.ID}}
+#  - DOCKERSWARM_NODE_HOSTNAME={{.Node.Hostname}}
+#  - DOCKERSWARM_TASK_ID={{.Task.ID}}
+#  - DOCKERSWARM_TASK_NAME={{.Task.Name}}
+#  - DOCKERSWARM_TASK_SLOT={{.Task.Slot}}
+#  - DOCKERSWARM_STACK_NAMESPACE={{ index .Service.Labels "com.docker.stack.namespace"}}
+DOCKERSWARM_SERVICE_ID=${DOCKERSWARM_SERVICE_ID}
+DOCKERSWARM_SERVICE_NAME=${DOCKERSWARM_SERVICE_NAME}
+DOCKERSWARM_NODE_ID=${DOCKERSWARM_NODE_ID}
+DOCKERSWARM_NODE_HOSTNAME=${DOCKERSWARM_NODE_HOSTNAME}
+DOCKERSWARM_TASK_ID=${DOCKERSWARM_TASK_ID}
+DOCKERSWARM_TASK_NAME=${DOCKERSWARM_TASK_NAME}
+DOCKERSWARM_TASK_SLOT=${DOCKERSWARM_TASK_SLOT}
+DOCKERSWARM_STACK_NAMESPACE=${DOCKERSWARM_STACK_NAMESPACE}
+
 # Prometheus configuration file.
 PROMETHEUS_TSDB_PATH=${PROMETHEUS_TSDB_PATH:-"/prometheus/data"}
 PROMETHEUS_CONFIG_FILE=${PROMETHEUS_CONFIG_FILE:-"/etc/prometheus/prometheus.yml"}
@@ -11,9 +29,21 @@ PROMETHEUS_CONFIG_FILE=${PROMETHEUS_CONFIG_FILE:-"/etc/prometheus/prometheus.yml
 # Create the directory for the configuration parts.
 mkdir -p $(dirname ${PROMETHEUS_CONFIG_FILE})
 
+# Generate a random node ID which will be persisted in the data directory
+if [ ! -f "${PROMETHEUS_TSDB_PATH}/node-id" ]; then
+    echo "==> Generate a random node ID which will be persisted in the data directory..."
+    uuidgen > "${PROMETHEUS_TSDB_PATH}/node-id"
+fi
+
+# Set the PROMETHEUS_NODE_ID to the content of the node-id file
+PROMETHEUS_NODE_ID=$(cat "${PROMETHEUS_TSDB_PATH}/node-id")
+
 # External labels
-PROMETHEUS_CLUSTER_NAME=${PROMETHEUS_CLUSTER_NAME:-"default"}
-PROMETHEUS_CLUSTER_REPLICA=${PROMETHEUS_CLUSTER_REPLICA:-"1"}
+PROMETHEUS_CLUSTER_NAME=${PROMETHEUS_CLUSTER_NAME:-${DOCKERSWARM_STACK_NAMESPACE:-"default"}}
+echo "==> Configure PROMETHEUS_CLUSTER_NAME as \"${PROMETHEUS_CLUSTER_NAME}\""
+
+PROMETHEUS_CLUSTER_REPLICA=${PROMETHEUS_CLUSTER_REPLICA:-${DOCKERSWARM_NODE_ID:-${PROMETHEUS_NODE_ID}}}
+echo "==> Configure PROMETHEUS_CLUSTER_REPLICA as \"${PROMETHEUS_CLUSTER_REPLICA}\""
 
 # Generate the global configuration file.
 PROMETHEUS_SCRAPE_INTERVAL=${PROMETHEUS_SCRAPE_INTERVAL:-"30s"}
@@ -61,5 +91,6 @@ if [ "$1" = "" ]; then
         --log.level=info
 fi
 
+echo "==> Starting Prometheus server..."
 set -x
 exec "$@"
