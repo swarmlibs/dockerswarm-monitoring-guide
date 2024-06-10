@@ -40,11 +40,9 @@ scrape_configs:
       # Override prometheus internal labels
       # ================================================================================
       - source_labels:
-        - __address__
-        - __meta_dockerswarm_node_address
+        - __meta_dockerswarm_node_id
         target_label: __address__
-        regex: ([^:]+)(?::\d+)?;(.+)
-        replacement: $1:9100
+        replacement: node-exporter.$1.cluster.local:9100
 
       # Set hostname as instance label
       - source_labels:
