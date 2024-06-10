@@ -107,7 +107,6 @@ services:
     ports:
       - published: 9115
         target: 9115
-        mode: host
     hostname: blackbox-exporter.svc.cluster.local
     networks:
       - dockerswarm_monitor
