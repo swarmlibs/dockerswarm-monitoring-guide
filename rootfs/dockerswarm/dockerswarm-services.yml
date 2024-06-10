@@ -81,11 +81,8 @@ scrape_configs:
       # ================================================================================
       - source_labels: [__address__]
         target_label: __param_target
-      - source_labels:
-        - __meta_dockerswarm_node_id
-        target_label: __address__
-        regex: (.+)
-        replacement: $1-blackbox-exporter.svc.cluster.local:9115
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
       - source_labels: [__param_target]
         target_label: instance
 
