@@ -1,4 +1,5 @@
 ARG GRAFANA_VERSION=latest
 FROM grafana/grafana:${GRAFANA_VERSION}
 
-COPY grafana-datasources.yml /etc/grafana/provisioning/datasources/provisioning-datasources.yaml
+COPY dashboards /var/lib/grafana/dashboards/
+COPY provisioning /etc/grafana/provisioning/
