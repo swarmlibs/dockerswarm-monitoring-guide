@@ -24,11 +24,9 @@ services:
     image: swarmlibs/prometheus:local
     deploy:
       labels:
-        io.prometheus.enabled: "true"
-        io.prometheus.job_name: "prometheus"
-        io.prometheus.scrape_port: "9090"
-        io.prometheus.metrics_path: "/metrics"
-        io.prometheus.server: "true"
+        io.prometheus.role: "prometheus"
+        io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
+        io.prometheus.dockerswarm-services.should_be_probed: "false"
     ports:
       - published: 9090
         target: 9090
@@ -56,7 +54,9 @@ services:
       replicas: 1
       resources: *x-exporter-resources-constraints
       labels:
-        io.prometheus.exporter: "true"
+        io.prometheus.role: "blackbox-exporter"
+        io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
+        io.prometheus.dockerswarm-services.should_be_probed: "false"
     ports:
       - published: 9115
         target: 9115
@@ -84,7 +84,9 @@ services:
       mode: global
       resources: *x-exporter-resources-constraints
       labels:
-        io.prometheus.exporter: "true"
+        io.prometheus.role: "node-exporter"
+        io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
+        io.prometheus.dockerswarm-services.should_be_probed: "false"
     volumes:
       - type: bind
         source: /
@@ -109,7 +111,9 @@ services:
       mode: global
       resources: *x-exporter-resources-constraints
       labels:
-        io.prometheus.exporter: "true"
+        io.prometheus.role: "cadvisor"
+        io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
+        io.prometheus.dockerswarm-services.should_be_probed: "false"
     ports:
       - published: 8080
         target: 8080

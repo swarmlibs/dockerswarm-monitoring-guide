@@ -15,15 +15,10 @@ scrape_configs:
       # Keep or drop targets with the following rules
       # ================================================================================
 
-      # - io.prometheus.server=<true|false>
+      # - io.prometheus.dockerswarm-tasks.should_be_scraped=<true|false>
       - source_labels:
-        - __meta_dockerswarm_service_label_io_prometheus_server
-        regex: 'true'
-        action: drop
-      # - io.prometheus.exporter=<true|false>
-      - source_labels:
-        - __meta_dockerswarm_service_label_io_prometheus_exporter
-        regex: 'true'
+        - __meta_dockerswarm_service_label_io_prometheus_dockerswarm_tasks_should_be_scraped
+        regex: 'false'
         action: drop
 
       # Keep only tasks with desired state "running"
@@ -96,6 +91,10 @@ scrape_configs:
         - __meta_dockerswarm_task_container_id
         target_label: container
         separator: '.'
+
+      # Drop all labels starting with "io.prometheus."
+      - action: labeldrop
+        regex: __meta_(dockerswarm_service_label_io_prometheus_.+)
 
       # ================================================================================
       # Label mapping
