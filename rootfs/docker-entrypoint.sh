@@ -11,6 +11,10 @@ PROMETHEUS_CONFIG_FILE=${PROMETHEUS_CONFIG_FILE:-"/etc/prometheus/prometheus.yml
 # Create the directory for the configuration parts.
 mkdir -p $(dirname ${PROMETHEUS_CONFIG_FILE})
 
+# External labels
+PROMETHEUS_CLUSTER_NAME=${PROMETHEUS_CLUSTER_NAME:-"default"}
+PROMETHEUS_CLUSTER_REPLICA=${PROMETHEUS_CLUSTER_REPLICA:-"1"}
+
 # Generate the global configuration file.
 PROMETHEUS_SCRAPE_INTERVAL=${PROMETHEUS_SCRAPE_INTERVAL:-"30s"}
 PROMETHEUS_SCRAPE_TIMEOUT=${PROMETHEUS_SCRAPE_TIMEOUT:-"15s"}
@@ -28,6 +32,12 @@ global:
   scrape_timeout: ${PROMETHEUS_SCRAPE_TIMEOUT} # scrape_timeout is set to the ${PROMETHEUS_SCRAPE_TIMEOUT}. The default is 15s. Prometheus default is 10s.
   evaluation_interval: ${PROMETHEUS_EVALUATION_INTERVAL} # Evaluate rules every ${PROMETHEUS_EVALUATION_INTERVAL}. The default is every 15s. Prometheus default is 1 minute.
   keep_dropped_targets: 50
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    __replica__: '${PROMETHEUS_CLUSTER_REPLICA}'
+    cluster: '${PROMETHEUS_CLUSTER_NAME}'
 
 # Load scrape configs from this directory.
 scrape_config_files:
