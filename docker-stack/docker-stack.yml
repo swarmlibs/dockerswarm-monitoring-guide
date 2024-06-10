@@ -44,14 +44,14 @@ services:
       - published: 9090
         target: 9090
         mode: host
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - prometheus-data:/prometheus/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     hostname: prometheus.svc.cluster.local
     networks:
       - dockerswarm_monitor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - prometheus-data:/prometheus/data
 
   # ====================================================
   # Blackbox prober exporter
@@ -90,11 +90,6 @@ services:
       - '--path.procfs=/host/proc'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
       - '--no-collector.ipvs'
-    logging: *x-default-logging
-    ports:
-      - published: 9100
-        target: 9100
-        mode: host
     deploy:
       mode: global
       resources: *x-exporter-resources-constraints
@@ -102,6 +97,14 @@ services:
         io.prometheus.role: "node-exporter"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
+    logging: *x-default-logging
+    ports:
+      - published: 9100
+        target: 9100
+        mode: host
+    hostname: "node-exporter.{{.Node.ID}}.cluster.local"
+    networks:
+      - dockerswarm_monitor
     volumes:
       - type: bind
         source: /
@@ -115,9 +118,6 @@ services:
         source: /sys
         target: /host/sys
         read_only: true
-    hostname: "node-exporter.{{.Node.ID}}.cluster.local"
-    networks:
-      - dockerswarm_monitor
 
   # ====================================================
   # cAdvisor
@@ -139,6 +139,9 @@ services:
       - published: 8080
         target: 8080
         mode: host
+    hostname: "cadvisor.{{.Node.ID}}.cluster.local"
+    networks:
+      - dockerswarm_monitor
     volumes:
       - type: bind
         source: /
@@ -170,6 +173,3 @@ services:
         source: /dev/kmsg
         target: /dev/kmsg
         read_only: true
-    hostname: "cadvisor.{{.Node.ID}}.cluster.local"
-    networks:
-      - dockerswarm_monitor
