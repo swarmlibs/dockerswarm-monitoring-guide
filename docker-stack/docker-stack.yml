@@ -16,11 +16,29 @@ volumes:
   prometheus-data:
 
 networks:
+  dockerswarm_host:
+    name: host
+    external: true
   dockerswarm_monitor:
     name: dockerswarm_monitor
     attachable: true
 
 services:
+
+  grafana:
+    image: grafana/grafana:latest
+    deploy:
+      replicas: 1
+      resources: *x-exporter-resources-constraints
+      labels:
+        io.prometheus.enabled: "true"
+        io.prometheus.job_name: "grafana"
+        io.prometheus.scrape_port: "3000"
+    ports:
+      - published: 3000
+        target: 3000
+    networks:
+      - dockerswarm_monitor
 
   # ====================================================
   # Prometheus
@@ -92,12 +110,7 @@ services:
   # ====================================================
 
   node-exporter:
-    image: prom/node-exporter:v1.5.0
-    command:
-      - '--path.sysfs=/host/sys'
-      - '--path.procfs=/host/proc'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-      - '--no-collector.ipvs'
+    image: swarmlibs/node-exporter:local
     deploy:
       mode: global
       resources: *x-exporter-resources-constraints
@@ -106,13 +119,8 @@ services:
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
     logging: *x-default-logging
-    ports:
-      - published: 9100
-        target: 9100
-        mode: host
-    hostname: "node-exporter.{{.Node.ID}}.cluster.local"
     networks:
-      - dockerswarm_monitor
+      - dockerswarm_host
     volumes:
       - type: bind
         source: /
@@ -143,13 +151,8 @@ services:
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
     logging: *x-default-logging
-    ports:
-      - published: 8080
-        target: 8080
-        mode: host
-    hostname: "cadvisor.{{.Node.ID}}.cluster.local"
     networks:
-      - dockerswarm_monitor
+      - dockerswarm_host
     volumes:
       - type: bind
         source: /
@@ -173,11 +176,11 @@ services:
         read_only: true
       # If you are running Docker Desktop on macOS,
       # You'll need to comment out the following bind mounts
-      - type: bind
-        source: /dev/disk
-        target: /dev/disk
-        read_only: true
-      - type: bind
-        source: /dev/kmsg
-        target: /dev/kmsg
-        read_only: true
+    #   - type: bind
+    #     source: /dev/disk
+    #     target: /dev/disk
+    #     read_only: true
+    #   - type: bind
+    #     source: /dev/kmsg
+    #     target: /dev/kmsg
+    #     read_only: true

@@ -1,2 +1,3 @@
 make:
-	docker buildx bake local --load
+	$(MAKE) -C images/prometheus
+	$(MAKE) -C images/node-exporter
