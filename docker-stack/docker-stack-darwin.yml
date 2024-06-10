@@ -20,6 +20,12 @@ networks:
     attachable: true
 
 services:
+
+  # ====================================================
+  # Blackbox prober exporter
+  # https://github.com/prometheus/prometheus
+  # ====================================================
+
   prometheus:
     image: swarmlibs/prometheus:local
     deploy:
@@ -41,7 +47,8 @@ services:
       - dockerswarm_monitor
 
   # ====================================================
-  # Essential services
+  # Blackbox prober exporter
+  # https://github.com/prometheus/blackbox_exporter
   # ====================================================
 
   blackbox-exporter:
@@ -64,7 +71,8 @@ services:
       - dockerswarm_monitor
 
   # ====================================================
-  # Globally deployed services
+  # Node exporter
+  # https://github.com/prometheus/node_exporter
   # ====================================================
 
   node-exporter:
@@ -101,6 +109,11 @@ services:
     hostname: "node-exporter.{{.Node.ID}}.cluster.local"
     networks:
       - dockerswarm_monitor
+
+  # ====================================================
+  # cAdvisor
+  # https://github.com/google/cadvisor
+  # ====================================================
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
