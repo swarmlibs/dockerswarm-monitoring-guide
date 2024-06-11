@@ -1,0 +1,15 @@
+
+networks:
+  dockerswarm_metrics:
+    name: dockerswarm_metrics
+    external: true
+
+services:
+
+  echo:
+    image: ealen/echo-server
+    ports:
+      - published: 18080
+        target: 80
+    networks:
+      dockerswarm_metrics:
