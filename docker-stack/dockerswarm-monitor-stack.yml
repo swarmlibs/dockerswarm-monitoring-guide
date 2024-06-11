@@ -84,7 +84,6 @@ services:
     ports:
       - published: 9090
         target: 9090
-        mode: host
     hostname: prometheus.svc.cluster.local
     networks:
       dockerswarm_metrics:
@@ -201,8 +200,3 @@ services:
     #     source: /dev/kmsg
     #     target: /dev/kmsg
     #     read_only: true
-
-  echo:
-    image: ealen/echo-server
-    networks:
-      dockerswarm_metrics:
