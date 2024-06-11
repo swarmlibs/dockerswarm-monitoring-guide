@@ -19,11 +19,11 @@ volumes:
 networks:
   dockerswarm_metrics:
     name: dockerswarm_metrics
-    attachable: true
+    external: true
 
   prometheus_exporter:
     name: prometheus_exporter
-    attachable: true
+    external: true
 
 services:
 

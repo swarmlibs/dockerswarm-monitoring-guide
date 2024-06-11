@@ -36,3 +36,24 @@ d7ac4srqrnbt   dockerswarm_monitor_blackbox-exporter   replicated   1/1         
 x0bpp3s1o5sa   dockerswarm_monitor_node-exporter       global       1/1                    swarmlibs/node-exporter:latest
 kvvx0wv8to7a   dockerswarm_monitor_prometheus          global       1/1                    swarmlibs/prometheus:latest
 ```
+
+## Configure the Docker daemon
+
+To configure the Docker daemon as a Prometheus target, you need to specify the metrics-address in the daemon.json configuration file. This daemon expects the file to be located at one of the following locations by default. If the file doesn't exist, create it.
+
+* **Linux**: `/etc/docker/daemon.json`
+* **Docker Desktop**: Open the Docker Desktop settings and select Docker Engine to edit the file.
+
+Add the following configuration:
+
+```json
+{
+  "metrics-addr": "0.0.0.0:9323"
+}
+```
+
+Save the file, or in the case of Docker Desktop for Mac or Docker Desktop for Windows, save the configuration. Restart Docker.
+
+Docker now exposes Prometheus-compatible metrics on port 9323 on the loopback interface.
+
+For more information on configuring the Docker daemon, see the [Docker documentation](https://docs.docker.com/config/daemon/prometheus/).
