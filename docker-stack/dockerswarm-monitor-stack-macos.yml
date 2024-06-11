@@ -20,7 +20,6 @@ networks:
   dockerswarm_metrics:
     name: dockerswarm_metrics
     external: true
-
   prometheus_exporter:
     name: prometheus_exporter
     external: true
