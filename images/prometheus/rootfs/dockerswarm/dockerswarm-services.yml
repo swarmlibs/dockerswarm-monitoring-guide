@@ -1,4 +1,4 @@
-# The scrape config for probing services ingresses via the Blackbox Exporter.
+# The scrape config for probing services via the Blackbox Exporter.
 #
 # The relabeling allows the actual service scrape endpoint to be configured
 # for all or only some services.
@@ -7,10 +7,10 @@
 # io.prometheus.probe_enabled=<true|false>
 # io.prometheus.probe_disabled=<true|false>
 # 
-# io.prometheus.dockerswarm-ingresses.should_be_probed=<true|false>
+# io.prometheus.dockerswarm-services.should_be_probed=<true|false>
 scrape_configs:
 
-  - job_name: 'dockerswarm-ingresses'
+  - job_name: 'dockerswarm-services'
 
     metrics_path: /probe
     params:
@@ -26,9 +26,9 @@ scrape_configs:
       # Keep or drop targets with the following rules
       # ================================================================================
 
-      # io.prometheus.dockerswarm-ingresses.should_be_probed=<true|false>
+      # io.prometheus.dockerswarm-services.should_be_probed=<true|false>
       - source_labels:
-        - __meta_dockerswarm_service_label_io_prometheus_dockerswarm_ingresses_should_be_probed
+        - __meta_dockerswarm_service_label_io_prometheus_dockerswarm_services_should_be_probed
         regex: 'false'
         action: drop
 
@@ -45,9 +45,9 @@ scrape_configs:
 
       # Keep only tasks connected to the "dockerswarm_metrics" network
       - source_labels:
-        - __meta_dockerswarm_network_ingress
-        regex: 'false'
-        action: drop
+        - __meta_dockerswarm_network_name
+        regex: (^dockerswarm_metrics$)
+        action: keep
 
       # ================================================================================
       # Override prometheus and blackbox internal labels
