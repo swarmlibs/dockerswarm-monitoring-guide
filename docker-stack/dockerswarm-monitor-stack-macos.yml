@@ -115,6 +115,8 @@ services:
         io.prometheus.dockerswarm-ingress.should_be_probed: "false"
     logging: *x-default-logging
     hostname: blackbox-exporter.svc.cluster.local
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       dockerswarm_ingress:
       dockerswarm_metrics:
