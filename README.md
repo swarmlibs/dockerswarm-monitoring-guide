@@ -6,11 +6,13 @@ A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Gr
 
 The Docker Swarm Monitoring Stack can be directly deployed as a service in your Docker cluster. Note that this method will automatically deploy a single instance of the Prometheus/Promtail Server, and deploy the cAdvisor, Node exporter and Blackbox prober exporter as a global service on every node in your cluster.
 
-First, create a new overlay network for the monitoring stack:
+First, create a new overlay network for the ingress, metrics and exporter stack:
 
 ```sh
+docker network create --scope=swarm --driver=overlay --attachable dockerswarm_ingress
+# Create the metrics/exporters network
 docker network create --scope=swarm --driver=overlay --attachable dockerswarm_metrics
-docker network create --scope=swarm --driver=overlay --attachable prometheus_exporter
+docker network create --scope=swarm --driver=overlay --attachable prometheus_exporters
 ```
 
 Retrieve the stack YML manifest:
