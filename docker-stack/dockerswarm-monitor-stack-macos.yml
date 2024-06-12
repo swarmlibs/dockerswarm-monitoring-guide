@@ -20,7 +20,6 @@ networks:
   dockerswarm_ingress:
     name: dockerswarm_ingress
     external: true
-
   dockerswarm_metrics:
     name: dockerswarm_metrics
     external: true
@@ -116,10 +115,8 @@ services:
         io.prometheus.dockerswarm-ingress.should_be_probed: "false"
     logging: *x-default-logging
     hostname: blackbox-exporter.svc.cluster.local
-    ports:
-      - published: 9115
-        target: 9115
     networks:
+      dockerswarm_ingress:
       dockerswarm_metrics:
       prometheus_exporters:
 

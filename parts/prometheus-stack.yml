@@ -16,10 +16,12 @@ volumes:
   prometheus-data:
 
 networks:
+  dockerswarm_ingress:
+    name: dockerswarm_ingress
+    attachable: true
   dockerswarm_metrics:
     name: dockerswarm_metrics
     attachable: true
-
   prometheus_exporters:
     name: prometheus_exporters
     attachable: true
@@ -58,6 +60,7 @@ services:
         target: 9090
     hostname: prometheus.svc.cluster.local
     networks:
+      dockerswarm_ingress:
       dockerswarm_metrics:
       prometheus_exporters:
     extra_hosts:
@@ -83,9 +86,7 @@ services:
         io.prometheus.dockerswarm-ingress.should_be_probed: "false"
     logging: *x-default-logging
     hostname: blackbox-exporter.svc.cluster.local
-    ports:
-      - published: 9115
-        target: 9115
     networks:
+      dockerswarm_ingress:
       dockerswarm_metrics:
       prometheus_exporters:

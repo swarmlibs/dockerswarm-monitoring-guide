@@ -10,6 +10,9 @@ volumes:
   grafana-data:
 
 networks:
+  dockerswarm_ingress:
+    name: dockerswarm_ingress
+    attachable: true
   dockerswarm_metrics:
     name: dockerswarm_metrics
     external: true
@@ -38,6 +41,7 @@ services:
         target: 3000
     hostname: grafana.svc.cluster.local
     networks:
+      dockerswarm_ingress:
       dockerswarm_metrics:
     volumes:
       - grafana-data:/grafana/data
