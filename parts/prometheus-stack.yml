@@ -27,33 +27,6 @@ networks:
 services:
 
   # ====================================================
-  # Grafana Dashboard
-  # https://github.com/grafana/grafana
-  # ====================================================
-
-  grafana:
-    image: swarmlibs/grafana:main
-    deploy:
-      replicas: 1
-      resources: *x-exporter-resources-constraints
-      labels:
-        io.prometheus.enabled: "true"
-        io.prometheus.job_name: "grafana"
-        io.prometheus.scrape_port: "3000"
-    logging: *x-default-logging
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_USERS_ALLOW_SIGN_UP=false
-    ports:
-      - published: 3000
-        target: 3000
-    networks:
-      dockerswarm_metrics:
-    volumes:
-      - grafana-data:/grafana/data
-
-  # ====================================================
   # Prometheus
   # https://github.com/prometheus/prometheus
   # ====================================================
@@ -109,9 +82,6 @@ services:
         io.prometheus.scrape_port: "9115"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
     logging: *x-default-logging
-    ports:
-      - published: 9115
-        target: 9115
     hostname: blackbox-exporter.svc.cluster.local
     networks:
       dockerswarm_metrics:
