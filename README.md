@@ -2,6 +2,10 @@
 
 A comprehensive guide to Docker Swarm monitoring with Prometheus Stack.
 
+> [!IMPORTANT]
+> This project is a work in progress and is not yet ready for production use.
+> But feel free to test it and provide feedback.
+
 ## Install
 
 The Docker Swarm Monitoring Stack can be directly deployed as a service in your Docker cluster. Note that this method will automatically deploy a single instance of the Prometheus/Promtail Server, and deploy the cAdvisor, Node exporter and Blackbox prober exporter as a global service on every node in your cluster.
