@@ -15,8 +15,8 @@ First, create a new overlay network for the ingress, metrics and exporter stack:
 ```sh
 docker network create --scope=swarm --driver=overlay --attachable dockerswarm_ingress
 # Create the metrics/exporters network
-docker network create --scope=swarm --driver=overlay --attachable dockerswarm_metrics
-docker network create --scope=swarm --driver=overlay --attachable prometheus_exporters
+docker network create --scope=swarm --driver=overlay --attachable prometheus
+docker network create --scope=swarm --driver=overlay --attachable prometheus_gwnetwork
 ```
 
 Retrieve the stack YML manifest:
