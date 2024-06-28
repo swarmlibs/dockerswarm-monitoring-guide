@@ -6,60 +6,34 @@ A comprehensive guide to Docker Swarm monitoring with Prometheus Stack.
 > This project is a work in progress and is not yet ready for production use.
 > But feel free to test it and provide feedback.
 
-## Install
+## Stacks
 
-The Docker Swarm Monitoring Stack can be directly deployed as a service in your Docker cluster. Note that this method will automatically deploy a single instance of the Prometheus/Promtail Server, and deploy the cAdvisor, Node exporter and Blackbox prober exporter as a global service on every node in your cluster.
+- [promstack](https://github.com/swarmlibs/promstack): A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Grafana, Prometheus, cAdvisor, Node exporter and Blackbox prober exporter)
+- [logstack](https://github.com/swarmlibs/logstack): Like Promstack, but for logs. Includes (Grafana Loki and Promtail)
 
-First, create a new overlay network for the ingress, metrics and exporter stack:
+## Architecture Overview
+This is the architecture overview of the whole system working together.
 
-```sh
-docker network create --scope=swarm --driver=overlay --attachable dockerswarm_ingress
-# Create the metrics/exporters network
-docker network create --scope=swarm --driver=overlay --attachable prometheus
-docker network create --scope=swarm --driver=overlay --attachable prometheus_gwnetwork
-```
+We are using the Grafana Labs’ opinionated observability stack which includes: Loki-for logs, Grafana - for dashboards and visualization, Tempo - for traces, and Mimir - for metrics.
 
-Retrieve the stack YML manifest:
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-for-scale-guide/assets/4363857/859a1172-db2a-4865-9f0c-ff596aff05c5">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-for-scale-guide/assets/4363857/41fb45ba-6a3c-4ab5-b549-37dbad9f8e44">
+  <img alt="Architecture Overview" src="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-for-scale-guide/assets/4363857/41fb45ba-6a3c-4ab5-b549-37dbad9f8e44">
+</picture>
 
-```sh
-curl -L https://raw.githubusercontent.com/swarmlibs/dockerswarm-monitor/main/docker-stack/dockerswarm-monitor-stack.yml -o dockerswarm-monitor-stack.yml
-```
+> [!WARNING]
+> This is an old "Architecture Overview" carried from [YouMightNotNeedKubernetes/dockerswarm-monitoring-deployment](https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-deployment).
 
-Then use the downloaded YML manifest to deploy your stack:
+## Components
+These are the components that will be instrumented to gather Metrics, Logs and Traces.
 
-```sh
-docker stack deploy -c dockerswarm-monitor-stack.yml dockerswarm_monitor
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/688c366c-17d1-4174-bffe-37c8251d0def">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/cd461ec4-4a33-42d9-818a-c390266d67f4">
+  <img alt="Components" src="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/cd461ec4-4a33-42d9-818a-c390266d67f4">
+</picture>
 
-Prometheus/Promtail Server and exporters have now been installed. You can check to see whether the Prometheus/Promtail Server and exporters services have started by running `docker service ls`.
+---
 
-```
-root@manager01:~# docker service ls
-ID             NAME                                    MODE         REPLICAS               IMAGE                              PORTS
-d7ac4srqrnbt   dockerswarm_monitor_blackbox-exporter   replicated   1/1                    prom/blackbox-exporter:latest      
-4xe4o39oe3p0   dockerswarm_monitor_cadvisor            global       1/1                    gcr.io/cadvisor/cadvisor:v0.47.0   
-2au72ggr246p   dockerswarm_monitor_grafana             replicated   1/1                    swarmlibs/grafana:latest           *:3000->3000/tcp
-x0bpp3s1o5sa   dockerswarm_monitor_node-exporter       global       1/1                    swarmlibs/node-exporter:latest
-kvvx0wv8to7a   dockerswarm_monitor_prometheus          global       1/1                    swarmlibs/prometheus:latest
-```
-
-## Configure the Docker daemon
-
-To configure the Docker daemon as a Prometheus target, you need to specify the metrics-address in the daemon.json configuration file. This daemon expects the file to be located at one of the following locations by default. If the file doesn't exist, create it.
-
-* **Linux**: `/etc/docker/daemon.json`
-* **Docker Desktop**: Open the Docker Desktop settings and select Docker Engine to edit the file.
-
-Add the following configuration:
-
-```json
-{
-  "metrics-addr": "0.0.0.0:9323"
-}
-```
-
-Save the file, or in the case of Docker Desktop for Mac or Docker Desktop for Windows, save the configuration. Restart Docker.
-
-Docker now exposes Prometheus-compatible metrics on port 9323 on the loopback interface.
-
-For more information on configuring the Docker daemon, see the [Docker documentation](https://docs.docker.com/config/daemon/prometheus/).
+TBD
