@@ -1,6 +1,5 @@
 # About
-
-A comprehensive guide to Docker Swarm monitoring with Prometheus Stack.
+A comprehensive guide for collecting, and exporting telemetry data (metrics, logs, and traces) from Docker Swarm environment.
 
 > [!IMPORTANT]
 > This project is a work in progress and is not yet ready for production use.
