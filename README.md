@@ -5,6 +5,15 @@ A comprehensive guide for collecting, and exporting telemetry data (metrics, log
 > This project is a work in progress and is not yet ready for production use.
 > But feel free to test it and provide feedback.
 
+- [About](#about)
+  - [Stacks](#stacks)
+  - [Architecture Overview](#architecture-overview)
+  - [Components](#components)
+  - [Pre-requisites](#pre-requisites)
+  - [Create a Docker Swarm Cluster](#create-a-docker-swarm-cluster)
+  - [Add Nodes to the Swarm Cluster](#add-nodes-to-the-swarm-cluster)
+  - [Configure the Docker daemon to expose metrics for Prometheus](#configure-the-docker-daemon-to-expose-metrics-for-prometheus)
+
 ## Stacks
 
 - [promstack](https://github.com/swarmlibs/promstack): A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Grafana, Prometheus, cAdvisor, Node exporter and Blackbox prober exporter)
@@ -32,6 +41,40 @@ These are the components that will be instrumented to gather Metrics, Logs and T
   <source media="(prefers-color-scheme: light)" srcset="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/cd461ec4-4a33-42d9-818a-c390266d67f4">
   <img alt="Components" src="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/cd461ec4-4a33-42d9-818a-c390266d67f4">
 </picture>
+
+
+## Pre-requisites
+
+- Docker running Swarm mode
+- A Docker Swarm cluster with at least 3 nodes
+- Configure Docker daemon to expose metrics for Prometheus
+
+## Create a Docker Swarm Cluster
+
+To create a Docker Swarm cluster, please follow the official documentation [here](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/).
+
+## Add Nodes to the Swarm Cluster
+
+To add nodes to the Docker Swarm cluster, please follow the official documentation [here](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/).
+
+## Configure the Docker daemon to expose metrics for Prometheus
+
+To configure the Docker daemon as a Prometheus target, you need to specify the metrics-address in the daemon.json configuration file. This daemon expects the file to be located at one of the following locations by default. If the file doesn't exist, create it.
+
+* **Linux**: `/etc/docker/daemon.json`
+* **Docker Desktop**: Open the Docker Desktop settings and select Docker Engine to edit the file.
+
+Add the following configuration:
+
+```json
+{
+  "metrics-addr": "0.0.0.0:9323"
+}
+```
+
+Save the file, or in the case of Docker Desktop for Mac or Docker Desktop for Windows, save the configuration. Restart Docker.
+
+The Docker Engine now exposes Prometheus-compatible metrics on port `9323` on all interfaces. For more information on configuring the Docker daemon, see the [Docker documentation](https://docs.docker.com/config/daemon/prometheus/).
 
 ---
 
