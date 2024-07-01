@@ -9,6 +9,8 @@ A comprehensive guide for collecting, and exporting telemetry data (metrics, log
   - [Stacks](#stacks)
   - [Architecture Overview](#architecture-overview)
   - [Components](#components)
+  - [Promstack](#promstack)
+  - [Logstack](#logstack)
   - [Pre-requisites](#pre-requisites)
   - [Create a Docker Swarm Cluster](#create-a-docker-swarm-cluster)
   - [Add Nodes to the Swarm Cluster](#add-nodes-to-the-swarm-cluster)
@@ -42,6 +44,27 @@ These are the components that will be instrumented to gather Metrics, Logs and T
   <img alt="Components" src="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/cd461ec4-4a33-42d9-818a-c390266d67f4">
 </picture>
 
+## Promstack
+
+A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Grafana, Prometheus, Promtail, cAdvisor, Node exporter and Blackbox prober exporter)
+
+- Automatically discover and scrape the metrics from the Docker Swarm nodes, services and tasks.
+- Ability to configure scrape target via Docker object labels.
+- Dynamically inject scrape configs from Docker configs.
+- Automatically reload the Prometheus configuration when the Docker configs are create/update/remove.
+
+The dynamic scrape configs are provided by the [swarmlibs/prometheus-configs-provider](https://github.com/swarmlibs/prometheus-configs-provider) service. And with the help of the [prometheus-operator/prometheus-operator/tree/main/cmd/prometheus-config-reloader](https://github.com/prometheus-operator/prometheus-operator/tree/main/cmd/prometheus-config-reloader) tool, we can automatically reload the Prometheus configuration when the Docker configs are create/update/remove.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/swarmlibs/prometheus/assets/4363857/de6989e9-4a01-4a51-929a-677093c4a07f">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/swarmlibs/prometheus/assets/4363857/935760e1-7493-40d0-acd7-8abae1b7ced8">
+  <img src="https://github.com/swarmlibs/prometheus/assets/4363857/935760e1-7493-40d0-acd7-8abae1b7ced8">
+</picture>
+
+
+## Logstack
+
+> WIP
 
 ## Pre-requisites
 
