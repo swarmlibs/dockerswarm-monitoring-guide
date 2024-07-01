@@ -11,8 +11,6 @@ A comprehensive guide for collecting, and exporting telemetry data (metrics, log
     - [Promstack](#promstack)
     - [Logstack](#logstack)
   - [Pre-requisites](#pre-requisites)
-  - [Create a Docker Swarm Cluster](#create-a-docker-swarm-cluster)
-  - [Add Nodes to the Swarm Cluster](#add-nodes-to-the-swarm-cluster)
   - [Configure the Docker daemon to expose metrics for Prometheus](#configure-the-docker-daemon-to-expose-metrics-for-prometheus)
 
 ## Architecture Overview
@@ -69,14 +67,6 @@ The dynamic scrape configs are provided by the [swarmlibs/prometheus-configs-pro
 - Docker running Swarm mode
 - A Docker Swarm cluster with at least 3 nodes
 - Configure Docker daemon to expose metrics for Prometheus
-
-## Create a Docker Swarm Cluster
-
-To create a Docker Swarm cluster, please follow the official documentation [here](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/).
-
-## Add Nodes to the Swarm Cluster
-
-To add nodes to the Docker Swarm cluster, please follow the official documentation [here](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/).
 
 ## Configure the Docker daemon to expose metrics for Prometheus
 
