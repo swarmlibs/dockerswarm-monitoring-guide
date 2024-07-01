@@ -6,20 +6,14 @@ A comprehensive guide for collecting, and exporting telemetry data (metrics, log
 > But feel free to test it and provide feedback.
 
 - [About](#about)
-  - [Stacks](#stacks)
   - [Architecture Overview](#architecture-overview)
-  - [Components](#components)
-  - [Promstack](#promstack)
-  - [Logstack](#logstack)
+  - [Stacks](#stacks)
+    - [Promstack](#promstack)
+    - [Logstack](#logstack)
   - [Pre-requisites](#pre-requisites)
   - [Create a Docker Swarm Cluster](#create-a-docker-swarm-cluster)
   - [Add Nodes to the Swarm Cluster](#add-nodes-to-the-swarm-cluster)
   - [Configure the Docker daemon to expose metrics for Prometheus](#configure-the-docker-daemon-to-expose-metrics-for-prometheus)
-
-## Stacks
-
-- [promstack](https://github.com/swarmlibs/promstack): A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Grafana, Prometheus, cAdvisor, Node exporter and Blackbox prober exporter)
-- [logstack](https://github.com/swarmlibs/logstack): Like Promstack, but for logs. Includes (Grafana Loki and Promtail)
 
 ## Architecture Overview
 This is the architecture overview of the whole system working together.
@@ -35,8 +29,12 @@ We are using the Grafana Labs’ opinionated observability stack which includes:
 > [!WARNING]
 > This is an old "Architecture Overview" carried from [YouMightNotNeedKubernetes/dockerswarm-monitoring-deployment](https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-deployment).
 
-## Components
+## Stacks
+
 These are the components that will be instrumented to gather Metrics, Logs and Traces.
+
+- [promstack](https://github.com/swarmlibs/promstack): A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Grafana, Prometheus, cAdvisor, Node exporter and Blackbox prober exporter)
+- [logstack](https://github.com/swarmlibs/logstack): Like Promstack, but for logs. Includes (Grafana Loki and Promtail)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/688c366c-17d1-4174-bffe-37c8251d0def">
@@ -44,7 +42,7 @@ These are the components that will be instrumented to gather Metrics, Logs and T
   <img alt="Components" src="https://github.com/YouMightNotNeedKubernetes/dockerswarm-monitoring-guide/assets/4363857/cd461ec4-4a33-42d9-818a-c390266d67f4">
 </picture>
 
-## Promstack
+### Promstack
 
 A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Grafana, Prometheus, Promtail, cAdvisor, Node exporter and Blackbox prober exporter)
 
@@ -62,7 +60,7 @@ The dynamic scrape configs are provided by the [swarmlibs/prometheus-configs-pro
 </picture>
 
 
-## Logstack
+### Logstack
 
 > WIP
 
