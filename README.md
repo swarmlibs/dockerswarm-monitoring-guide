@@ -57,10 +57,20 @@ The dynamic scrape configs are provided by the [swarmlibs/prometheus-configs-pro
   <img src="https://github.com/swarmlibs/prometheus/assets/4363857/935760e1-7493-40d0-acd7-8abae1b7ced8">
 </picture>
 
+See https://github.com/swarmlibs/promstack for more information.
 
 ### Logstack
 
-> WIP
+Like Promstack, but for logs. Includes (Grafana Loki and Promtail)
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/swarmlibs/logstack/assets/4363857/7a23f4ab-9eff-49a3-af87-bc6810a41afe">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/swarmlibs/logstack/assets/4363857/61e98272-c65e-4a05-8488-8a3256544f59">
+  <img src="https://github.com/swarmlibs/logstack/assets/4363857/61e98272-c65e-4a05-8488-8a3256544f59">
+</picture>
+
+See https://github.com/swarmlibs/logstack for more information.
 
 ## Pre-requisites
 
