@@ -51,31 +51,6 @@ Like Promstack, but for logs. Includes (Grafana Loki and Promtail)
 
 See https://github.com/swarmlibs/logstack for more information.
 
-## Pre-requisites
-
-- Docker running Swarm mode
-- A Docker Swarm cluster with at least 3 nodes
-- Configure Docker daemon to expose metrics for Prometheus
-
-## Configure the Docker daemon to expose metrics for Prometheus
-
-To configure the Docker daemon as a Prometheus target, you need to specify the metrics-address in the daemon.json configuration file. This daemon expects the file to be located at one of the following locations by default. If the file doesn't exist, create it.
-
-* **Linux**: `/etc/docker/daemon.json`
-* **Docker Desktop**: Open the Docker Desktop settings and select Docker Engine to edit the file.
-
-Add the following configuration:
-
-```json
-{
-  "metrics-addr": "0.0.0.0:9323"
-}
-```
-
-Save the file, or in the case of Docker Desktop for Mac or Docker Desktop for Windows, save the configuration. Restart Docker.
-
-The Docker Engine now exposes Prometheus-compatible metrics on port `9323` on all interfaces. For more information on configuring the Docker daemon, see the [Docker documentation](https://docs.docker.com/config/daemon/prometheus/).
-
 ---
 
 TBD
